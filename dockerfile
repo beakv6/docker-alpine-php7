@@ -3,7 +3,6 @@ MAINTAINER Blake Anderson <blake@expressiveanalytics.com>
 
 ENV DOCKAGE_WEBROOT_DIR=/var/www \
     DOCKAGE_DATA_DIR=/data \
-    DOCKAGE_ETC_DIR=/etc/dockage \
     DOCKAGE_LOG_DIR=/var/log
 
 ADD ./root /

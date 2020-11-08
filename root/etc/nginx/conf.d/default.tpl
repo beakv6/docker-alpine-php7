@@ -1,9 +1,9 @@
 server {
-    listen   {{NGINX_PORT}};
-    server_name {{NGINX_SERVER_NAME}};
+    listen {{NGINX_PORT}};
+    server_name {{NGINX_HOST}};
 
     # root directive should be global
-    root   /var/www/;
+    root   {{NGINX_ROOT}};
     index  index.php index.html;
 
     location / {

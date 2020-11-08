@@ -2,7 +2,8 @@
 set -eu
 
 NGINX_PORT=${NGINX_PORT:-80}
-NGINX_SERVER_NAME=${NGINX_SERVER_NAME:-_}
+NGINX_HOST=${NGINX_HOST:-_}
+NGINX_ROOT=${NGINX_ROOT:-/var/www}
 
 PHP_FPM_USER=${PHP_FPM_USER:-nginx}
 PHP_FPM_GROUP=${PHP_FPM_USER:-nginx}
@@ -17,7 +18,7 @@ PHP_FPM_PROCESS_MANAGER_MAX_SPARE_SERVERS=${PHP_FPM_PROCESS_MANAGER_MAX_SPARE_SE
 
 case ${1} in
     app:start)
-        cat ${DOCKAGE_ETC_DIR}/runtime/configs/php/php-fpm.conf | \
+        cat /etc/php7/php-fpm.tpl | \
         sed -e "s#{{PHP_FPM_USER}}#$PHP_FPM_USER#g" \
             -e "s#{{PHP_FPM_GROUP}}#$PHP_FPM_GROUP#g" \
             -e "s#{{PHP_FPM_UNIX_SOCKET_OWNER}}#$PHP_FPM_UNIX_SOCKET_OWNER#g" \
@@ -30,10 +31,17 @@ case ${1} in
             -e "s#{{PHP_FPM_PROCESS_MANAGER_MAX_SPARE_SERVERS}}#$PHP_FPM_PROCESS_MANAGER_MAX_SPARE_SERVERS#g" \
             > /etc/php7/php-fpm.conf
 
-        cat ${DOCKAGE_ETC_DIR}/runtime/configs/nginx/default.conf | \
+        cat /etc/nginx/conf.d/default.tpl | \
         sed -e "s#{{NGINX_PORT}}#$NGINX_PORT#g" \
-            -e "s#{{NGINX_SERVER_NAME}}#$NGINX_SERVER_NAME#g" \
-            > /etc/nginx/conf.d/default.conf
+           -e "s#{{NGINX_HOST}}#$NGINX_HOST#g" \
+           -e "s#{{NGINX_ROOT}}#$NGINX_ROOT#g" \
+           > /etc/nginx/conf.d/default.conf
+
+        cat /etc/nginx/conf.d/default.conf
+
+        mkdir -p ${DOCKAGE_LOG_DIR}/nginx/logs
+
+        ls ${DOCKAGE_LOG_DIR}
 
         exec /sbin/runit-init
         ;;
